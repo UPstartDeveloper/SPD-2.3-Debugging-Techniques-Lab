@@ -44,21 +44,21 @@ def binary_search(arr, elem):
     high = len(arr) - 1
     mid = 0
   
-    while low < high: 
+    while low <= high: 
   
-        mid = (high + low) / 2
+        mid = (high + low) // 2
   
-        # Check if elem is present at mid 
-        if arr[mid] < elem: 
-            low = mid + 1
+        # Check if elem is present at mid
+        if arr[mid] == elem:
+            return mid 
   
-        # If elem is greater, ignore left half 
+        # If elem is smaller, ignore right half 
         elif arr[mid] > elem: 
             high = mid - 1
   
-        # If elem is smaller, ignore right half 
-        else: 
-            return mid 
+        # If elem is greater, ignore left half 
+        elif arr[mid] < elem: 
+            low = mid + 1
   
     # If we reach here, then the element was not present 
     return -1

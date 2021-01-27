@@ -77,4 +77,8 @@ _...Then the next error was that the `temperature` key wasn't in the JSON respon
 
 ## Exercise 3
 
-[[Your answer goes here!]]
+_I used divide and conquer to see the first issue was in `util.py`, and that it had to do with the Merge Sort function. I traced forward through both functions because it was a little different from the implementations I'm used to. Then I saw a few issues, related to just implementing the algorithms the way they are intended to be. Firstly, the comparision operator on line 37 was `>` so I changed it to be `<=`._
+
+_Then I realized the output had more 2's in it than in the input, so I traced back through the three while loops (which help implement the "merge" step of Merge Sort), and realized that `k`, the index of `arr`, needs to increment along with either `i` or `j`, like it does in the first `while` loop (this is in the case the `left_side` and `right_side` have unequal lengths)._
+
+_Lastly, for the binary search algorithm I traced back to where `mid` is initialized, and changed the division operator from `/` to `//`, since that would prevent the `IndexError` in the stack trace. Finally, I used the previous developer's comments to fix the control flow - they understood the algorithm well, we just needed to move the statements to the line numbers where they would match the comments. I only had to add an additional `if` condition on line 52, that would return the index if the `elem` value was found._
