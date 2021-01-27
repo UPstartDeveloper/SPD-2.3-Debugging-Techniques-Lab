@@ -66,6 +66,7 @@ def pizza_order_form():
 
 @app.route('/order', methods=['POST'])
 def pizza_order_submit():
+    # get data from the order form
     order_name = request.form.get('order_name')
     pizza_size_str = request.form.get('pizza_size')
     crust_type_str = request.form.get('crust_type')
@@ -76,16 +77,25 @@ def pizza_order_submit():
         crust_type=crust_type_str,
         fulfilled=False
     )
-
-    for topping_str in toppings_list:
-        pizza.toppings.append(PizzaTopping(topping_type=topping_str))
-    # with app.app_context():
-    print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
+    print(pizza.order_name, pizza.size, pizza.crust_type, pizza.toppings)
     with app.app_context():
         db.session.add(pizza)
+        db.session.commit()
         print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
         # my_pizza = Pizza.query.filter_by(id=pizza.id).one()
-    print(pizza.order_name, pizza.size, pizza.crust_type, pizza.fulfilled)
+    # make the pizza toppings
+    toppings = list()
+    for topping_str in toppings_list:
+        new_topping = PizzaTopping(topping_type=topping_str, pizza_id=pizza.id)
+        db.session.add(new_topping)
+        toppings.append(new_topping)
+    # update the toppings on the order
+    pizza = Pizza.query.filter_by(id=pizza.id).one()
+    pizza.toppings = toppings
+    db.session.add(pizza)
+    db.session.commit()
+    # with app.app_context():
+    print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
     flash('Your order has been submitted!')
     return redirect(url_for('home'))
 
