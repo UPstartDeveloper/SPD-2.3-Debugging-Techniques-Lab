@@ -66,36 +66,38 @@ def pizza_order_form():
 
 @app.route('/order', methods=['POST'])
 def pizza_order_submit():
+    '''Add the Pizza order details to the database.'''
     # get data from the order form
     order_name = request.form.get('order_name')
     pizza_size_str = request.form.get('pizza_size')
     crust_type_str = request.form.get('crust_type')
-    toppings_list = request.form.get('toppings')
+    toppings_list = request.form.getlist('toppings')
+    # add the pizza order to the db
     pizza = Pizza(
         order_name=order_name,
         size=pizza_size_str,
         crust_type=crust_type_str,
         fulfilled=False
     )
-    print(pizza.order_name, pizza.size, pizza.crust_type, pizza.toppings)
+    # save the id of the new pizza
+    pizza_id = -1
     with app.app_context():
         db.session.add(pizza)
         db.session.commit()
-        print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
-        # my_pizza = Pizza.query.filter_by(id=pizza.id).one()
-    # make the pizza toppings
+        pizza_id = pizza.id
+    # make the pizza toppings, using the id of the order above
     toppings = list()
     for topping_str in toppings_list:
-        new_topping = PizzaTopping(topping_type=topping_str, pizza_id=pizza.id)
-        db.session.add(new_topping)
+        new_topping = PizzaTopping(topping_type=topping_str, pizza_id=pizza_id)
+        with app.app_context():
+            db.session.add(new_topping)
         toppings.append(new_topping)
     # update the toppings on the order
-    pizza = Pizza.query.filter_by(id=pizza.id).one()
-    pizza.toppings = toppings
-    db.session.add(pizza)
-    db.session.commit()
-    # with app.app_context():
-    print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
+    with app.app_context():
+        pizza = Pizza.query.filter_by(id=pizza.id).one()
+        pizza.toppings = toppings
+        db.session.add(pizza)
+        db.session.commit()
     flash('Your order has been submitted!')
     return redirect(url_for('home'))
 
