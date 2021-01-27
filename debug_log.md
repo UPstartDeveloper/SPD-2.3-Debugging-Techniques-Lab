@@ -23,7 +23,7 @@ _Finally, I had to use divide and conquer to determine why the orders weren't be
 
 ## Exercise 2
 
-[[Your answer goes here!]]
+_The first problem I saw was that there was a `KeyError` when trying to parse the JSON. Using this info I traced back to where the API call was being made, and decided to print the JSON. This led me to another error, which the API was being incorrectly made (the response code in the JSON was 4xx). Therefore, I used divide and conquer to first check that the data was being passed from the HTML form correctly, and then being made correctly. I traced forward in the `home.html` template, and realized the names of the field inputs didn't match what was being requested in the app routes, so that was resolved. Next, I looked up some examples on the [OpenWeather Map API](https://openweathermap.org/current), and realized the `place` parameter in the API call really needed to be called `q`. Then, the response from the API was successfully returned with a HTTP 200._
 
 ## Exercise 3
 
