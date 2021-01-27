@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Pizza Orders</h1>
+    <h1>Pizza Orders</h1>
 
-<a href="/order">+ New Order</a>
+    <a href="/order">+ New Order</a>
 
     {% for pizza in pizza_orders %}
         <div class="pizza_order">
@@ -33,6 +33,6 @@
             </form>
         </div>
     {% else %}
-        <p>No pizza orders to show!</p>
+        <p>No pizza orders to show! {{ pizza_orders.count() }}</p>
     {% endfor %}
 {% endblock %}

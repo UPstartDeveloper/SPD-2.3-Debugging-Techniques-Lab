@@ -15,8 +15,11 @@ _Then I noticed another bug ..._
 
 ## Exercise 1
 
-[[Your answer goes here!]]
+_I noticed there was a TypeError occuring on line 81, where we append the toppings to the new pizza that the user has ordered. Since I was really new to the codebase, I started from the top of `app.py`, and realized the parameter for the toppings on line 81 was wrong, looking at the class definition for the `PizzaTopping`._
 
+_The second problem I noticed is the print statement after the pizza was added to the db was outputting `None`. At this point I knew a little more, so I traced backward to the form template on `order.html`, and realized that the names on the form fields, was different from what was being referenced in the `/order` route. So I fixed it, and used a print statement on line 86 of `app.py` to verify all the fields of the Pizza ORM were being populated._
+
+_Finally, I had to use divide and conquer to determine why the orders weren't being displayed, by using the `.count()` function on the `home.html` Jinja template. This led me to deduce the error was in the `/order`, right where we were making the call to `db.session.add`._
 ## Exercise 2
 
 [[Your answer goes here!]]

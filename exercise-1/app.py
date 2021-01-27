@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, session_options={"autoflush": False})
 
 ###############################################
 ### MODELS
@@ -51,7 +51,8 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    all_pizzas = Pizza.query.filter_by(fulfilled=False)
+    with app.app_context():
+        all_pizzas = Pizza.query.filter_by(fulfilled=False)
     print(all_pizzas)
     return render_template('home.html', pizza_orders=all_pizzas)
 
@@ -72,14 +73,19 @@ def pizza_order_submit():
     pizza = Pizza(
         order_name=order_name,
         size=pizza_size_str,
-        crust_type=crust_type_str)
+        crust_type=crust_type_str,
+        fulfilled=False
+    )
 
     for topping_str in toppings_list:
         pizza.toppings.append(PizzaTopping(topping_type=topping_str))
-    # print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
-    db.session.add(pizza)
-    # print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
-    print(pizza.order_name, pizza.size, pizza.crust_type)
+    # with app.app_context():
+    print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
+    with app.app_context():
+        db.session.add(pizza)
+        print(f"Num of pizzas: {len(list(Pizza.query.filter_by(fulfilled=False)))}")
+        # my_pizza = Pizza.query.filter_by(id=pizza.id).one()
+    print(pizza.order_name, pizza.size, pizza.crust_type, pizza.fulfilled)
     flash('Your order has been submitted!')
     return redirect(url_for('home'))
 
