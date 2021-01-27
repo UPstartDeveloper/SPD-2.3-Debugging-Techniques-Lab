@@ -23,7 +23,57 @@ _Finally, I had to use divide and conquer to determine why the orders weren't be
 
 ## Exercise 2
 
-_The first problem I saw was that there was a `KeyError` when trying to parse the JSON. Using this info I traced back to where the API call was being made, and decided to print the JSON. This led me to another error, which the API was being incorrectly made (the response code in the JSON was 4xx). Therefore, I used divide and conquer to first check that the data was being passed from the HTML form correctly, and then being made correctly. I traced forward in the `home.html` template, and realized the names of the field inputs didn't match what was being requested in the app routes, so that was resolved. Next, I looked up some examples on the [OpenWeather Map API](https://openweathermap.org/current), and realized the `place` parameter in the API call really needed to be called `q`. Then, the response from the API was successfully returned with a HTTP 200._
+_The first problem I saw was that there was a `KeyError` when trying to parse the JSON. Using this info I traced back to where the API call was being made, and decided to print the JSON. This led me to another error, which the API was being incorrectly made (the response code in the JSON was 4xx). Therefore, I used divide and conquer to first check that the data was being passed from the HTML form correctly, and then being made correctly. I traced forward in the `home.html` template, and realized the names of the field inputs didn't match what was being requested in the app routes, so that was resolved. Next, I looked up some examples on the [OpenWeather Map API](https://openweathermap.org/current), and realized the `place` parameter in the API call really needed to be called `q`. Then, the response from the API was successfully returned with a HTTP 200..._
+
+To make the next paragraph clearer, consider this example of a successful API response:
+
+```
+{
+    "coord": {
+        "lon": -71.0598,
+        "lat": 42.3584
+    },
+    "weather": [
+        {
+            "id": 804,
+            "main": "Clouds",
+            "description": "overcast clouds",
+            "icon": "04d"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 32.81,
+        "feels_like": 23.65,
+        "temp_min": 30.99,
+        "temp_max": 35.01,
+        "pressure": 1016,
+        "humidity": 86
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 9.22,
+        "deg": 340
+    },
+    "clouds": {
+        "all": 90
+    },
+    "dt": 1611763678,
+    "sys": {
+        "type": 1,
+        "id": 3486,
+        "country": "US",
+        "sunrise": 1611748944,
+        "sunset": 1611784288
+    },
+    "timezone": -18000,
+    "id": 4930956,
+    "name": "Boston",
+    "cod": 200
+}
+```
+
+_...Then the next error was that the `temperature` key wasn't in the JSON response, which threw a `KeyError`. At first instinct I thought to check the route again, but first I thought it'd be better to first use divide and conquer, so I would be sure the HTML template was rendering all the variables from the context dictionary. It already was, so that probably wasn't the most effective debugging decision. Anyway, I looked the example API responses from before, found the real way to get the temperature was with `result_json['main']['temp']`. I made that change where the `KeyError` was, and the issue was resolved._
 
 ## Exercise 3
 
